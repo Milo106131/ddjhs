@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大道國中 - 午餐資訊網</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-pink: #FFB6C1;
+            --light-pink: #FFE4E9;
+            --soft-yellow: #FFD700;
+            --light-blue: #87CEFA;
+            --lavender: #D8BFD8;
+            --mint-green: #98FB98;
+            --text-color: #333;
+            --light-bg: #FFF0F5;
+            --card-bg: #FFF;
+            --border-radius: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'YuGothic', 'Hiragino Sans GB', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="5" fill="%23FFB6C1" opacity="0.2"/><circle cx="50" cy="50" r="8" fill="%2387CEFA" opacity="0.2"/><circle cx="80" cy="80" r="6" fill="%23FFD700" opacity="0.2"/></svg>');
+            padding-top: 0;
+        }
+
+        /* 頂部跑馬燈 */
+        .marquee-container {
+            background: linear-gradient(135deg, var(--primary-pink), var(--lavender));
+            padding: 12px 0;
+            overflow: hidden;
+            border-bottom: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 25s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* 導覽列 */
+        nav {
+            background: linear-gradient(135deg, var(--light-blue), var(--mint-green));
+            padding: 15px 0;
+            border-bottom: 3px solid white;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-item {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 8px;
+            color: var(--primary-pink);
+        }
+
+        .nav-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background-color: var(--light-pink);
+        }
+
+        /* 首頁背景與內容 */
+        .homepage {
+            min-height: 500px;
+            background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .homepage::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .school-name {
+            font-size: 3rem;
+            color: var(--#D3A4FF);
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            color: #555;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+        }
+
+        .function-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .function-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary-pink);
+        }
+
+        .function-card h3 {
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .function-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 頁面內容區域 */
+        .page-content {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-pink);
+            font-size: 2.2rem;
+            position: relative;
+        }
+
+        .page-title:after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-pink), var(--light-blue));
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .vendor-section {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+        
+        .vendor-section h3 {
+            font-size: 1.8rem;
+            color: #4A4A4A;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* 菜單表格 */
+        .menu-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-table th, .menu-table td {
+            border: 1px solid var(--light-pink);
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .menu-table th {
+            background-color: var(--light-pink);
+            color: var(--text-color);
+        }
+
+        .menu-table tr:nth-child(even) {
+            background-color: #FFF8F8;
+        }
+
+        /* 上傳區域 */
+        .upload-area {
+            border: 3px dashed var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            background-color: rgba(135, 206, 250, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(135, 206, 250, 0.2);
+            border-color: var(--primary-pink);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--light-blue);
+            margin-bottom: 15px;
+        }
+
+        .upload-note {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        /* 相簿樣式 */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .photo-item {
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 影片容器 */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 檔案列表 */
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .file-item i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: var(--light-blue);
+        }
+
+        /* 按鈕樣式 */
+        .survey-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-pink), var(--light-blue));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+        }
+
+        .survey-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 裝飾元素 */
+        .decoration {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.15;
+            font-size: 5rem;
+        }
+
+        .rice-ball {
+            top: 15%;
+            left: 5%;
+            transform: rotate(15deg);
+        }
+
+        .animal {
+            bottom: 10%;
+            right: 5%;
+            transform: rotate(-10deg);
+        }
+
+        .curry-rice{
+            bottom: 10%;
+            right: 40%;
+            transform: rotate(-10deg);
+        }
+
+        .koala{
+            bottom: 10%;
+            left: 60%;
+            transform: rotate(20deg);
+        }
+
+        .sloth{
+            bottom: 10%;
+            right: 5%;
+            transform: rotate(-40deg);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .school-name {
+                font-size: 2.2rem;
+            }
+
+            .welcome-message {
+                font-size: 1.2rem;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-item {
+                width: 80%;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .photo-item {
+                height: 150px;
+            }
+        }
+
+        /* 自訂訊息視窗樣式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h3 {
+            color: var(--primary-pink);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        .modal-content button {
+            background: linear-gradient(135deg, var(--primary-pink), var(--light-blue));
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .modal-content button:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="decoration rice-ball">🍙</div>
+    <div class="decoration animal">🐰</div>
+    <div class="decoration curry-rice">🍛</div>
+    <div class="decoration koala">🐨</div>
+    <div class="decoration sloth">🦥</div>
+
+    <div class="marquee-container">
+        <div class="marquee">
+            🎉 歡迎來到大道國中午餐網站 🎉 &nbsp;&nbsp;|&nbsp;&nbsp;
+            📢 提醒：下週一進行廚房清潔，供餐時間調整為12:10 📢 &nbsp;&nbsp;|&nbsp;&nbsp;
+            🌟 營養小知識：每天攝取五種不同顏色的蔬果，健康滿分！ 🌟٩(◕‿◕)۶
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-item" onclick="showPage('home')"><i class="fas fa-home"></i> 首頁</a>
+            <a href="#" class="nav-item" onclick="showPage('menu')"><i class="fas fa-utensils"></i> 廠商菜單</a>
+            <a href="#" class="nav-item" onclick="showPage('survey')"><i class="fas fa-clipboard-list"></i> 滿意度調查</a>
+            <a href="#" class="nav-item" onclick="showPage('gallery')"><i class="fas fa-camera"></i> 活動照片</a>
+            <a href="#" class="nav-item" onclick="showPage('education')"><i class="fas fa-apple-alt"></i> 營養教育</a>
+            <a href="#" class="nav-item" onclick="showPage('subsidy')"><i class="fas fa-file-contract"></i> 補助申請</a>
+            <a href="#" class="nav-item" onclick="showPage('finance')"><i class="fas fa-calculator"></i> 收支結算</a>
+            <a href="#" class="nav-item" onclick="showPage('lunch-coupon')"><i class="fas fa-ticket-alt"></i> 安心午餐券</a>
+        </div>
+    </nav>
+
+    <div id="home" class="page-content">
+        <div class="homepage">
+            <h1 class="school-name">大道國中 (´｡• ᵕ •｡`)</h1>
+            <p class="welcome-message">歡迎使用午餐資訊系統，請選擇您需要的服務٩꒰｡•◡•｡꒱۶</p>
+            <div class="function-grid">
+                <div class="function-card" onclick="showPage('menu')">
+                    <i class="fas fa-utensils"></i>
+                    <h3>廠商菜單</h3>
+                    <p>查看每日營養午餐菜單與熱量資訊</p>
+                </div>
+                <div class="function-card" onclick="showPage('survey')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>滿意度調查</h3>
+                    <p>填寫午餐滿意度問卷，提供寶貴意見</p>
+                </div>
+                <div class="function-card" onclick="showPage('gallery')">
+                    <i class="fas fa-camera"></i>
+                    <h3>活動照片</h3>
+                    <p>瀏覽午餐相關活動的精彩照片 ૮꒰˶ฅ́˘ฅ̀˶꒱ა</p>
+                </div>
+                <div class="function-card" onclick="showPage('education')">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>營養教育</h3>
+                    <p>學習均衡飲食與營養知識 ૮꒰ ˶• ༝ •˶꒱ა</p>
+                </div>
+                <div class="function-card" onclick="showPage('subsidy')">
+                    <i class="fas fa-file-contract"></i>
+                    <h3>補助申請</h3>
+                    <p>下載與上傳午餐補助申請文件</p>
+                </div>
+                <div class="function-card" onclick="showPage('finance')">
+                    <i class="fas fa-calculator"></i>
+                    <h3>收支結算</h3>
+                    <p>查看午餐經費收支結算表</p>
+                </div>
+                <div class="function-card" onclick="showPage('lunch-coupon')">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>安心午餐券</h3>
+                    <p>下載與管理午餐券相關文件</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廠商菜單顯示與匯出</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            background-color: #f7fafc;
+        }
+        .page-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .upload-area {
+            border: 2px dashed #9ca3af;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-top: 2rem;
+        }
+        .upload-area:hover {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .upload-area h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #4b5563;
+            margin-top: 1rem;
+        }
+        .upload-area i {
+            font-size: 3rem;
+            color: #9ca3af;
+        }
+        .file-input {
+            display: none;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .excel-table th, .excel-table td {
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .excel-table thead th {
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+        .excel-table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .btn-export {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-export:hover {
+            background-color: #45a049;
+        }
+        .vendor-section {
+            margin-bottom: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu" class="page-content">
+        <h2 class="page-title"><i class="fas fa-utensils"></i> 廠商菜單 ԅ(¯﹃¯ԅ)</h2>
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">玉美</h3>
+            <div id="upload-section-1">
+                <div class="upload-area" id="drop-area-1">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-1" accept=".xlsx, .xls, .csv">
+                </div>
+                <div id="status-message-1" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-1" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-1" class="table-container" style="display: none;">
+                <table id="data-table-1" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+        
+        <hr class="my-8">
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">香豪佳</h3>
+            <div id="upload-section-2">
+                <div class="upload-area" id="drop-area-2">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-2" accept=".xlsx, .xls, .csv">
+                </div>
+                <div id="status-message-2" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-2" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-2" class="table-container" style="display: none;">
+                <table id="data-table-2" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+
+        <hr class="my-8">
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">潔達</h3>
+            <div id="upload-section-3">
+                <div class="upload-area" id="drop-area-3">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-3" accept=".xlsx, .xls, .csv">
+                </div>
+                <div id="status-message-3" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-3" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-3" class="table-container" style="display: none;">
+                <table id="data-table-3" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setupUploader(index) {
+            const dropArea = document.getElementById(`drop-area-${index}`);
+            const fileInput = document.getElementById(`file-input-${index}`);
+            const statusMessage = document.getElementById(`status-message-${index}`);
+            const tableContainer = document.getElementById(`table-container-${index}`);
+            const dataTable = document.getElementById(`data-table-${index}`);
+            const exportButton = document.getElementById(`export-button-${index}`);
+            let currentWorkbook;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.add('border-red-500');
+                });
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.remove('border-red-500');
+                });
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            dropArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+
+            exportButton.addEventListener('click', () => {
+                if (currentWorkbook) {
+                    exportFile(currentWorkbook);
+                }
+            });
+
+            function handleFile(file) {
+                statusMessage.textContent = `正在讀取檔案: ${file.name}...`;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        currentWorkbook = workbook;
+                        
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                        if (jsonData.length > 0) {
+                            statusMessage.textContent = `檔案「${file.name}」讀取成功！`;
+                            renderTable(jsonData);
+                        } else {
+                            statusMessage.textContent = `檔案「${file.name}」內容為空。`;
+                            tableContainer.style.display = 'none';
+                            exportButton.style.display = 'none';
+                        }
+                    } catch (error) {
+                        console.error("處理檔案時發生錯誤:", error);
+                        statusMessage.textContent = `讀取檔案時發生錯誤。請確認您上傳的是有效的 Excel 或 CSV 檔案。`;
+                        tableContainer.style.display = 'none';
+                        exportButton.style.display = 'none';
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            function renderTable(data) {
+                dataTable.innerHTML = '';
+                
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                data[0].forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                dataTable.appendChild(thead);
+                
+                const tbody = document.createElement('tbody');
+                for (let i = 1; i < data.length; i++) {
+                    const rowData = data[i];
+                    if (rowData.length === 0) continue;
+                    const tr = document.createElement('tr');
+                    rowData.forEach(cellData => {
+                        const td = document.createElement('td');
+                        td.textContent = cellData;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                }
+                dataTable.appendChild(tbody);
+
+                tableContainer.style.display = 'block';
+                exportButton.style.display = 'inline-block';
+            }
+            
+            function exportFile(workbook) {
+                const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+                
+                const s2ab = (s) => {
+                    const buf = new ArrayBuffer(s.length);
+                    const view = new Uint8Array(buf);
+                    for (let i = 0; i < s.length; i++) {
+                        view[i] = s.charCodeAt(i) & 0xFF;
+                    }
+                    return buf;
+                };
+
+                const fileName = `廠商${index}菜單.xlsx`;
+                const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // 呼叫函式來初始化每個上傳區塊
+        setupUploader(1);
+        setupUploader(2);
+        setupUploader(3);
+    </script>
+</body>
+</html>
+    <div id="survey" class="page-content">
+        <h2 class="page-title"><i class="fas fa-clipboard-list"></i> 午餐滿意度調查</h2>
+        <p> 請點擊下方按鈕填寫本週的午餐滿意度問卷，您的意見對我們非常重要！的午餐滿意度問卷，您的意見對我們非常重要！ ฅ^•ω•^ฅ</p>
+        <center>
+            <a href="https://drive.google.com/drive/folders/13kufycRg2lY25sgKWWdC-NSdTV5qaTwu?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 填寫問卷
+            </a>
+       
+    </div>
+
+   <div id="gallery" class="page-content">
+    <h2 class="page-title"><i class="fas fa-camera"></i> 活動照片</h2>
+    
+    <!-- 照片上傳區域 -->
+    <div class="mb-8 bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa fa-upload mr-2 text-primary"></i>添加新照片
+        </h2>
+        <input type="file" id="photoUpload" accept="image/*" multiple 
+               class="border border-gray-300 rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-primary">
+        <button id="addPhotos" class="mt-3 bg-primary hover:bg-blue-600 text-white py-2 px-4 rounded-md transition duration-300">
+            <i class="fa fa-plus mr-1"></i> 添加照片
+        </button>
+    </div>
+
+    <!-- 照片展示区域 -->
+    <div>
+        <h2 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa fa-th mr-2 text-primary"></i>照片列表
+        </h2>
+        
+        <div id="photoGallery" class="photo-grid">
+            <!-- 示例照片 -->
+                
+        </div>
+        
+        <!-- 空状态提示 -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <i class="fa fa-picture-o text-gray-300 text-6xl mb-4"></i>
+            <p class="text-gray-500 text-lg">暂无照片，请添加照片</p>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg w-full max-w-md p-6 transform transition-all scale-95">
+            <div class="text-center mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-4">
+                    <i class="fa fa-exclamation-triangle text-danger text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">确认删除</h3>
+                <p class="text-gray-600 mt-2">您确定要删除这张照片吗？此操作无法撤销。</p>
+            </div>
+            <div class="flex justify-center space-x-4 mt-6">
+                <button id="cancelDelete" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
+                    取消
+                </button>
+                <button id="confirmDelete" class="px-6 py-2 bg-danger text-white rounded-md hover:bg-red-700 transition duration-300">
+                    确认删除
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作成功提示 -->
+    <div id="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+        <i class="fa fa-check-circle mr-2"></i>
+        <span id="notificationText">操作成功</span>
+    </div>
+
+    <script>
+        // 使用IIFE包装代码，避免全局变量冲突
+        (function() {
+            // 存储当前要删除的照片ID
+            let photoToDelete = null;
+            
+            // DOM元素
+            const deleteModal = document.getElementById('deleteModal');
+            const cancelDelete = document.getElementById('cancelDelete');
+            const confirmDelete = document.getElementById('confirmDelete');
+            const photoGallery = document.getElementById('photoGallery');
+            const emptyState = document.getElementById('emptyState');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification');
+            const addPhotosBtn = document.getElementById('addPhotos');
+            const photoUpload = document.getElementById('photoUpload');
+            
+            // 检查是否有照片，控制空状态显示
+            function checkEmptyState() {
+                const photos = document.querySelectorAll('.photo-card');
+                if (photos.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            }
+            
+            // 显示通知
+            function showNotification(message) {
+                notificationText.textContent = message;
+                notification.classList.remove('translate-y-20', 'opacity-0');
+                notification.classList.add('translate-y-0', 'opacity-100');
+                
+                // 3秒后隐藏通知
+                setTimeout(() => {
+                    notification.classList.remove('translate-y-0', 'opacity-100');
+                    notification.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
+            
+            // 删除照片
+            function deletePhoto(photoId) {
+                const photoCard = document.querySelector(`.photo-card[data-id="${photoId}"]`);
+                if (photoCard) {
+                    // 添加删除动画
+                    photoCard.classList.add('opacity-0', 'scale-95');
+                    photoCard.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        photoCard.remove();
+                        checkEmptyState();
+                        showNotification('照片已成功删除');
+                    }, 300);
+                }
+            }
+            
+            // 打开删除确认模态框
+            function openDeleteModal(photoId) {
+                photoToDelete = photoId;
+                deleteModal.classList.remove('hidden');
+                // 添加淡入动画
+                setTimeout(() => {
+                    deleteModal.querySelector('div').classList.add('scale-100');
+                    deleteModal.querySelector('div').classList.remove('scale-95');
+                }, 10);
+            }
+            
+            // 关闭删除确认模态框
+            function closeDeleteModal() {
+                deleteModal.querySelector('div').classList.remove('scale-100');
+                deleteModal.querySelector('div').classList.add('scale-95');
+                
+                setTimeout(() => {
+                    deleteModal.classList.add('hidden');
+                    photoToDelete = null;
+                }, 300);
+            }
+            
+            // 添加新照片
+            function addNewPhotos(files) {
+                if (!files || files.length === 0) return;
+                
+                Array.from(files).forEach(file => {
+                    if (!file.type.startsWith('image/')) {
+                        showNotification('请上传图片文件');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const timestamp = new Date().getTime();
+                        const photoId = `new-${timestamp}`;
+                        const date = new Date().toLocaleDateString();
+                        
+                        // 创建新照片卡片
+                        const photoCard = document.createElement('div');
+                        photoCard.className = 'photo-card opacity-0 scale-95';
+                        photoCard.dataset.id = photoId;
+                        photoCard.innerHTML = `
+                            <div class="photo-container relative">
+                                <img src="${e.target.result}" alt="上传的照片" class="w-full h-64 object-cover">
+                                <button class="delete-btn" data-id="${photoId}" title="删除照片">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="p-3">
+                                <p class="font-medium">新照片</p>
+                                <p class="text-sm text-gray-500">上传于 ${date}</p>
+                            </div>
+                        `;
+                        
+                        // 添加到画廊
+                        photoGallery.appendChild(photoCard);
+                        
+                        // 触发动画
+                        setTimeout(() => {
+                            photoCard.classList.remove('opacity-0', 'scale-95');
+                        }, 10);
+                        
+                        // 绑定删除事件
+                        photoCard.querySelector('.delete-btn').addEventListener('click', function() {
+                            openDeleteModal(photoId);
+                        });
+                        
+                        checkEmptyState();
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                showNotification(`已添加 ${files.length} 张照片`);
+                // 清空文件输入
+                photoUpload.value = '';
+            }
+            
+            // 初始化函数，在页面显示时调用
+            function initGallery() {
+                // 移除已存在的事件监听，避免重复绑定
+                const newAddPhotosBtn = document.getElementById('addPhotos');
+                const newPhotoUpload = document.getElementById('photoUpload');
+                const newCancelDelete = document.getElementById('cancelDelete');
+                const newConfirmDelete = document.getElementById('confirmDelete');
+                
+                // 先移除可能存在的事件监听
+                const cleanEventListeners = (element) => {
+                    const clone = element.cloneNode(true);
+                    element.parentNode.replaceChild(clone, element);
+                    return clone;
+                };
+                
+                // 重新获取并清理元素
+                const cleanAddPhotosBtn = cleanEventListeners(newAddPhotosBtn);
+                const cleanPhotoUpload = cleanEventListeners(newPhotoUpload);
+                const cleanCancelDelete = cleanEventListeners(newCancelDelete);
+                const cleanConfirmDelete = cleanEventListeners(newConfirmDelete);
+                
+                // 初始检查空状态
+                checkEmptyState();
+                
+                // 删除按钮点击事件
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const photoId = this.dataset.id;
+                        openDeleteModal(photoId);
+                    });
+                });
+                
+                // 取消删除
+                cleanCancelDelete.addEventListener('click', closeDeleteModal);
+                
+                // 确认删除
+                cleanConfirmDelete.addEventListener('click', function() {
+                    if (photoToDelete) {
+                        deletePhoto(photoToDelete);
+                        closeDeleteModal();
+                    }
+                });
+                
+                // 点击模态框外部关闭
+                deleteModal.addEventListener('click', function(e) {
+                    if (e.target === deleteModal) {
+                        closeDeleteModal();
+                    }
+                });
+                
+                // 添加照片按钮点击
+                cleanAddPhotosBtn.addEventListener('click', function() {
+                    if (cleanPhotoUpload.files.length > 0) {
+                        addNewPhotos(cleanPhotoUpload.files);
+                    } else {
+                        showNotification('请先选择照片');
+                    }
+                });
+                
+                // 文件选择变化时自动添加
+                cleanPhotoUpload.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        addNewPhotos(this.files);
+                    }
+                });
+            }
+            
+            // 当页面显示时初始化
+            if (window && window.addEventListener) {
+                // 监听页面显示事件，适用于单页应用切换
+                window.addEventListener('galleryPageShow', initGallery);
+                
+                // 立即初始化一次
+                initGallery();
+            } else {
+                // 兼容处理
+                initGallery();
+            }
+        })();
+    </script>
+</div>
+    <div id="education" class="page-content">
+    <h2 class="page-title"><i class="fas fa-apple-alt"></i> 營養教育宣導</h2>
+    <style>
+        .video-container {
+            width: 560px;
+            height: 315px;
+            margin-bottom: 20px;
+        }
+        .upload-area {
+            width: 560px;
+            height: 180px;
+            border: 2px dashed #666;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        .upload-area:hover {
+            border-color: #2c82c9;
+        }
+        .upload-area i {
+            font-size: 36px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .upload-area h3 {
+            font-size: 50px;
+            color: #333;
+            margin: 0 0 8px 0;
+            text-align: center;
+            padding: 0 10px;
+        }
+        .upload-note {
+            font-size: 14px;
+            color: #888;
+            margin: 0;
+        }
+        .uploaded-file-list {
+            width: 560px;
+            margin-top: 15px;
+        }
+        .uploaded-file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .uploaded-file-item i {
+            font-size: 20px;
+            color: #2c82c9;
+            margin-right: 12px;
+        }
+        .uploaded-file-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 15px;
+        }
+        .uploaded-file-path {
+            font-size: 13px;
+            color: #2c82c9;
+            text-decoration: underline;
+        }
+        .uploaded-file-path:hover {
+            color: #1a5d8c;
+        }
+        .error提示 {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+<h3>不吃麵粉身體會更好？歐美超夯的「無麩質飲食」到底是什麼？</h3>
+    <div class="video-container">
+        <iframe <iframe width="560" height="315" src="https://www.youtube.com/embed/roYa64Fk2pU?si=Mp4b7iEkhijNuxCs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <h3>奶精到底是什麼？喝早餐店大冰奶會拉肚子，是奶精害的嗎？</h3>
+    <div class="video-container">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/FRCth5C6wvo?si=aXzVrkExEu1GiyIB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+    <h3>味精曾是最潮的調味料，為何卻跌落神壇？鮮味背後的身世，可能比你想的更曲折！</h3>
+    <div class="video-container">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/wF7UdCb1RnA?si=qydaCns_nfHgPDdU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+	
+	<h3>魔芋爽是甚麼？成分大揭秘！</h3>
+    <div class="video-container">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/4dvV6f6CgzY?si=m766DFz1dmsu7p2X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+	
+	<h3>注意好XX偶爾吃不危險?!吃泡麵會怎樣</h3>
+    <div class="video-container">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/mb2cW96Jae8?si=Y6pV2Wa_X22IBUSl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
+      <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 資料下載處
+
+            </a>
+        </center>
+</div>
+
+
+    <div id="subsidy" class="page-content">
+        <h2 class="page-title"><i class="fas fa-file-contract"></i> 補助申請書</h2>
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 資料下載處
+
+            </a>
+        </center>
+    </div>
+
+    <div id="finance" class="page-content">
+        <h2 class="page-title"><i class="fas fa-calculator"></i> 收支結算表</h2>
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 資料下載處
+
+            </a>
+        </center>
+    </div>
+
+    <div id="lunch-coupon" class="page-content">
+        <h2 class="page-title"><i class="fas fa-ticket-alt"></i> 安心午餐券</h2>
+       <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 資料下載處
+
+            </a>
+        </center>
+    </div>
+
+    <div id="myModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <button onclick="hideModal()">確認</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025  大道國中 午餐資訊系統 | 電話: (04) 2699-2028 | 地址: 臺中市大肚區大東里仁德路60號 | 傳真：04-26980970</p>
+    </footer>
+
+    <script>
+        // 頁面切換功能
+        function showPage(pageId) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+
+            // 顯示選定的頁面
+            document.getElementById(pageId).style.display = 'block';
+
+            // 如果選擇的是首頁，添加特殊樣式
+            if (pageId === 'home') {
+                document.getElementById('home').classList.add('homepage');
+            } else {
+                document.getElementById('home').classList.remove('homepage');
+            }
+
+            // 滾動到頂部
+            window.scrollTo(0, 0);
+        }
+
+        // 顯示自訂訊息視窗
+        function showModal(title, message) {
+            const modal = document.getElementById('myModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            modal.classList.add('visible');
+        }
+
+        // 隱藏自訂訊息視窗
+        function hideModal() {
+            const modal = document.getElementById('myModal');
+            modal.classList.remove('visible');
+        }
+
+        // 初始化顯示首頁
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+
+            // 簡單的拖放功能示例
+            document.querySelectorAll('.upload-area').forEach(area => {
+                area.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    area.style.backgroundColor = 'rgba(135, 206, 250, 0.3)';
+                    area.style.borderColor = '#FFB6C1';
+                });
+
+                area.addEventListener('dragleave', () => {
+                    area.style.backgroundColor = 'rgba(135, 206, 250, 0.1)';
+                    area.style.borderColor = '#87CEFA';
+                });
+
+                area.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    area.style.backgroundColor = 'rgba(135, 206, 250, 0.1)';
+                    area.style.borderColor = '#87CEFA';
+
+                    try {
+                        const files = e.dataTransfer.files;
+                        console.log('拖曳的檔案列表:', files); // 幫助您在主控台確認是否有檔案
+                        if (files.length > 0) {
+                            const file = files[0];
+                            console.log('第一個檔案:', file); // 顯示第一個檔案的詳細資訊
+                            // 呼叫自訂視窗來顯示上傳訊息
+                            showModal('上傳成功', `已接收到檔案: ${file.name}`);
+                        } else {
+                            // 如果沒有檔案被讀取，顯示此訊息
+                            showModal('上傳失敗', '沒有偵測到任何檔案。請確認您拖曳的是檔案而非資料夾。');
+                        }
+                    } catch (error) {
+                        // 如果發生任何錯誤，顯示此訊息
+                        console.error('處理檔案時發生錯誤:', error);
+                        showModal('發生錯誤', '處理檔案時發生了問題，請稍後再試。');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
