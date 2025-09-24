@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大道國中 - 午餐資訊網</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-pink: #FFB6C1;
+            --light-pink: #FFE4E9;
+            --soft-yellow: #FFD700;
+            --light-blue: #87CEFA;
+            --lavender: #D8BFD8;
+            --mint-green: #98FB98;
+            --text-color: #333;
+            --light-bg: #FFF0F5;
+            --card-bg: #FFF;
+            --border-radius: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'YuGothic', 'Hiragino Sans GB', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="5" fill="%23FFB6C1" opacity="0.2"/><circle cx="50" cy="50" r="8" fill="%2387CEFA" opacity="0.2"/><circle cx="80" cy="80" r="6" fill="%23FFD700" opacity="0.2"/></svg>');
+            padding-top: 0;
+         }
+
+        /* 頂部跑馬燈 */
+        .marquee-container {
+            background: linear-gradient(135deg, var(--primary-pink), var(--lavender));
+            padding: 12px 0;
+            overflow: hidden;
+            border-bottom: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 25s linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* 導覽列 */
+        nav {
+            background: linear-gradient(135deg, var(--light-blue), var(--mint-green));
+            padding: 15px 0;
+            border-bottom: 3px solid white;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-item {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 8px;
+            color: var(--primary-pink);
+        }
+
+        .nav-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background-color: var(--light-pink);
+        }
+
+        /* 首頁背景與內容 */
+        .homepage {
+            min-height: 500px;
+            background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .homepage::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .school-name {
+            font-size: 3rem;
+            color: #D3A4FF;
+            margin-bottom: 20px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            color: #555;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+        }
+
+        .function-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .function-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary-pink);
+        }
+
+        .function-card h3 {
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .function-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 頁面內容區域 */
+        .page-content {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-pink);
+            font-size: 2.2rem;
+            position: relative;
+        }
+
+        .page-title:after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-pink), var(--light-blue));
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .vendor-section {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+        
+        .vendor-section h3 {
+            font-size: 1.8rem;
+            color: #4A4A4A;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* 菜單表格 */
+        .menu-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-table th, .menu-table td {
+            border: 1px solid var(--light-pink);
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .menu-table th {
+            background-color: var(--light-pink);
+            color: var(--text-color);
+        }
+
+        .menu-table tr:nth-child(even) {
+            background-color: #FFF8F8;
+        }
+
+        /* 上傳區域 */
+        .upload-area {
+            border: 3px dashed var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+            background-color: rgba(135, 206, 250, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(135, 206, 250, 0.2);
+            border-color: var(--primary-pink);
+        }
+
+        .upload-note {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        /* 相簿樣式 */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .photo-item {
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* 影片容器 */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 檔案列表 */
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .file-item i {
+            margin-right: 15px;
+            font-size: 1.8rem;
+            color: var(--light-blue);
+        }
+
+        /* 按鈕樣式 */
+        .survey-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-pink), var(--light-blue));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+        }
+
+        .survey-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 裝飾元素 */
+        .decoration {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.15;
+            font-size: 5rem;
+        }
+
+        .rice-ball {
+            top: 15%;
+            left: 5%;
+            transform: rotate(15deg);
+        }
+
+        .animal {
+            bottom: 10%;
+            right: 5%;
+            transform: rotate(-10deg);
+        }
+
+        .curry-rice{
+            bottom: 10%;
+            right: 40%;
+            transform: rotate(-10deg);
+        }
+
+        .koala{
+            bottom: 10%;
+            left: 60%;
+            transform: rotate(20deg);
+        }
+
+        .sloth{
+            bottom: 10%;
+            right: 5%;
+            transform: rotate(-40deg);
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .school-name {
+                font-size: 2.2rem;
+            }
+
+            .welcome-message {
+                font-size: 1.2rem;
+            }
+
+            .function-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-item {
+                width: 80%;
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .photo-item {
+                height: 150px;
+            }
+        }
+
+        /* 自訂訊息視窗樣式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h3 {
+            color: var(--primary-pink);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        .modal-content button {
+            background: linear-gradient(135deg, var(--primary-pink), var(--light-blue));
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .modal-content button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 公告容器样式 */
+        .announcements-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        /* 公告标题栏 */
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #FFB6C1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .header-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .announcement-header h3 {
+            font-size: 1.5rem;
+            color: #211e1e;
+            margin: 0;
+        }
+
+        .header-decoration {
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #FFB6C1, transparent);
+            margin-left: 15px;
+        }
+
+        /* 公告列表 */
+        .announcement-list {
+            margin-bottom: 15px;
+        }
+
+        /* 公告项 */
+        .announcement-item {
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-item:hover {
+            background-color: #FFF8F9;
+        }
+
+        .announcement-content {
+            display: flex;
+            align-items: center;
+            max-width: 80%;
+        }
+
+        .announcement-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #FFB6C1;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .announcement-item span:first-of-type {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .announcement-date {
+            color: #999;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            padding-left: 15px;
+        }
+
+        /* 查看更多按钮 */
+        .announcement-more {
+            text-align: right;
+            padding-top: 10px;
+        }
+
+        .more-link {
+            color: #FFB6C1;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .more-link:hover {
+            color: #FF8FA3;
+            transform: translateX(3px);
+        }
+
+        .more-link i {
+            font-size: 0.8rem;
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+
+        .more-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .announcement-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 0;
+            }
+            
+            .announcement-date {
+                padding-left: 18px;
+                margin-top: 5px;
+                font-size: 0.8rem;
+                color: #bbb;
+            }
+            
+            .announcement-content {
+                max-width: 100%;
+            }
+        }
+
+        /* 廠商菜單相關樣式 */
+        .file-input {
+            display: none;
+        }
+
+        .btn-export {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-export:hover {
+            background-color: #45a049;
+        }
+
+        .table-container {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .excel-table th, .excel-table td {
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        .excel-table thead th {
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+
+        .excel-table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .login-status {
+            text-align: right;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .login-form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .login-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .login-form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #loginError {
+            color: #ff0000;
+            display: none;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration rice-ball">🍙</div>
+    <div class="decoration animal">🐰</div>
+    <div class="decoration curry-rice">🍛</div>
+    <div class="decoration koala">🐨</div>
+    <div class="decoration sloth">🦥</div>
+
+    <div class="marquee-container">
+        <div class="marquee">
+            🎉 歡迎來到大道國中午餐網站 🎉 &nbsp;&nbsp;|&nbsp;&nbsp;
+            📢 提醒：下週一進行廚房清潔，供餐時間調整為12:10 📢 &nbsp;&nbsp;|&nbsp;&nbsp;
+            🌟 營養小知識：每天攝取五種不同顏色的蔬果，健康滿分！ 🌟٩(◕‿◕)۶
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-item" onclick="showPage('home')"><i class="fas fa-home"></i> 首頁</a>
+            <a href="#" class="nav-item" onclick="showPage('menu')"><i class="fas fa-utensils"></i> 廠商菜單</a>
+            <a href="#" class="nav-item" onclick="showPage('survey')"><i class="fas fa-clipboard-list"></i> 滿意度調查</a>
+            <a href="#" class="nav-item" onclick="showPage('gallery')"><i class="fas fa-camera"></i> 活動照片</a>
+            <a href="#" class="nav-item" onclick="showPage('education')"><i class="fas fa-apple-alt"></i> 營養教育</a>
+            <a href="#" class="nav-item" onclick="showPage('subsidy')"><i class="fas fa-file-contract"></i> 補助申請</a>
+            <a href="#" class="nav-item" onclick="showPage('finance')"><i class="fas fa-calculator"></i> 收支結算</a>
+            <a href="#" class="nav-item" onclick="showPage('lunch-coupon')"><i class="fas fa-ticket-alt"></i> 安心午餐券</a>
+        </div>
+    </nav>
+
+    <div id="home" class="page-content">
+        <div class="homepage">
+            <h1 class="school-name">大道國中 (´｡• ᵕ •｡`)</h1>
+            <p class="welcome-message">歡迎使用午餐資訊系統，請選擇您需要的服務٩꒰｡•◡•｡꒱۶</p>
+            <div class="function-grid">
+                <div class="function-card" onclick="showPage('menu')">
+                    <i class="fas fa-utensils"></i>
+                    <h3>廠商菜單</h3>
+					<p>提供最新的學校午餐菜單，讓家長和學生了解每日營養攝取狀況(*^▽^*)。</p>
+                    <p>查看每日營養午餐菜單與熱量資訊</p>
+                </div>
+                <div class="function-card" onclick="showPage('survey')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>滿意度調查</h3>
+                    <p>請點擊下方按鈕填寫本週的午餐滿意度問卷，您的意見對我們非常重要！的午餐滿意度問卷，您的意見對我們非常重要！ ฅ^•ω•^ฅ</p>
+                </div>
+                <div class="function-card" onclick="showPage('gallery')">
+                    <i class="fas fa-camera"></i>
+                    <h3>活動照片</h3>
+                    <p>瀏覽午餐相關活動的精彩照片 ૮꒰˶ฅ́˘ฅ̀˶꒱ა</p>
+                </div>
+                <div class="function-card" onclick="showPage('education')">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>營養教育</h3>
+                    <p>學習均衡飲食與營養知識 ૮꒰ ˶• ༝ •˶꒱ა</p>
+                </div>
+                <div class="function-card" onclick="showPage('subsidy')">
+                    <i class="fas fa-file-contract"></i>
+                    <h3>補助申請</h3>
+                    <p>下載與上傳午餐補助申請文件</p>
+                </div>
+                <div class="function-card" onclick="showPage('finance')">
+                    <i class="fas fa-calculator"></i>
+                    <h3>收支結算</h3>
+                    <p>查看午餐經費收支結算表</p>
+                </div>
+                <div class="function-card" onclick="showPage('lunch-coupon')">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>安心午餐券</h3>
+                    <p>下載與管理午餐券相關文件</p>
+                </div>
+				
+            </div>
+        </div>
+	 <div class="announcements-container">
+            <div class="announcement-header">
+                <div class="header-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3>最新公告</h3>
+                <div class="header-decoration"></div>
+            </div>
+            
+            <div class="announcement-list">
+                <div class="announcement-item">
+                    <div class="announcement-content">
+                        <div class="announcement-dot"></div>
+                        <span>9月1日起午餐廚餘減量計畫開始</span>
+                    </div>
+                    <span class="announcement-date">2025-09-1</span>
+                </div>
+                
+                <div class="announcement-item">
+                    <div class="announcement-content">
+                        <div class="announcement-dot"></div>
+                        <span>12345</span>
+                    </div>
+                    <span class="announcement-date">2023-05-08</span>
+                </div>
+                
+                <div class="announcement-item">
+                    <div class="announcement-content">
+                        <div class="announcement-dot"></div>
+                        <span>本學期午餐費費補助申請已開始，截止日期為5月30日</span>
+                    </div>
+                    <span class="announcement-date">2023-05-05</span>
+                </div>
+                
+                <div class="announcement-item">
+                    <div class="announcement-content">
+                        <div class="announcement-dot"></div>
+                        <span>6月起將實施新的午餐供應商評鑑制度</span>
+                    </div>
+                    <span class="announcement-date">2023-05-01</span>
+                </div>
+            </div>
+            
+            <div class="announcement-more">
+                <a href="#" class="more-link">查看全部公告 <i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu" class="page-content">
+        <div class="login-status">
+            <span id="loginInfo">未登錄</span>
+            <button id="logoutBtn" class="logout-btn" style="display: none;" onclick="logout()">退出登錄</button>
+        </div>
+        
+        <h2 class="page-title"><i class="fas fa-utensils"></i> 廠商菜單 ԅ(¯﹃¯ԅ)</h2>
+
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 雲端資料下載處
+            </a>
+        </center>
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">玉美</h3>
+            <div id="upload-section-1">
+                <div class="upload-area" id="drop-area-1" onclick="handleUploadAreaClick(1)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-1" accept=".xlsx, .xls, .csv">
+                </div>
+                <div id="status-message-1" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-1" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-1" class="table-container" style="display: none;">
+                <table id="data-table-1" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+        
+        <hr class="my-8">
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">香豪佳</h3>
+            <div id="upload-section-2">
+                <div class="upload-area" id="drop-area-2" onclick="handleUploadAreaClick(2)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-2" accept=".xlsx, .xls, .csv">
+                </div>
+                <div id="status-message-2" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-2" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-2" class="table-container" style="display: none;">
+                <table id="data-table-2" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+
+        <hr class="my-8">
+
+        <div class="vendor-section">
+            <h3 class="text-2xl font-bold mb-4">潔達</h3>
+            <div id="upload-section-3">
+                <div class="upload-area" id="drop-area-3" onclick="handleUploadAreaClick(3)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>拖曳Excel或CSV檔案至此上傳更新菜單</h3>
+                    <p class="text-gray-500 mt-2">或點擊此處選擇檔案</p>
+                    <input type="file" class="file-input" id="file-input-3" accept=".xlsx, .xls, .csv">
+                </div>
+               <div id="status-message-3" class="text-center mt-4 font-semibold text-gray-700"></div>
+            </div>
+            <div class="text-center">
+                <button id="export-button-3" class="btn-export">匯出 Excel</button>
+            </div>
+            <div id="table-container-3" class="table-container" style="display: none;">
+                <table id="data-table-3" class="excel-table rounded-lg shadow"></table>
+            </div>
+        </div>
+
+    </div>
+
+   <div id="survey" class="page-content">
+    <h2 class="page-title">午餐滿意度調查</h2>
+    <center>
+        <p>請點擊下方按鈕填寫本週的午餐滿意度問卷，您的意見對我們非常重要！ ฅ^•ω•^ฅ</p>
+        <a href="https://drive.google.com/drive/folders/13kufycRg2lY25sgKWWdC-NSdTV5qaTwu" class="survey-button" target="_blank">
+            <i class="fas fa-pencil-alt"></i> 填寫問卷
+        </a>
+        
+        <!-- 新增的第2週調查按鈕 -->
+        <div style="margin-top: 20px;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeDo-kmRezAq8173z9bM2HI8nhHSrtzU-7N_BUL7NMZslP_tA/viewform" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第2週(09/08-09/12) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSe1jPb0zrMYxe_UT4gbE4_8dyshs0bK-UTm-87-Q2uVlWcC-w/viewform" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第3週(09/15-09/19) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/s9vToNLqcKTTeKt66" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第4週(09/22-09/26) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/3eyyyF1dENtkEVho7" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第5週(09/29-10/03) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/uhgiFqGpSUPFePgP7" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第6週(10/06-10/10) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/Bz7kKfA6HSwzqmKQ8" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第7週(10/13-10/17) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/Dv3k5XQ1CRxawn3U8" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第8週(10/20-10/24) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/5KERdAjFyQhUkzQW6" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第9週(10/27-10/31) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/tNWyASbbBs7u3zAi9" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第10週(11/03-11/07) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/7aibyHtW3YGKCrAx6" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第11週(11/10-11/14) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/VDRhmipFKwKWY84Y6" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第12週(11/17-11/21) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/EEDxCe6mP9tqD7PD6" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第13週(11/24-11/28) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/ynDG3SSbU6g9VRXeA" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第14週(12/01-12/05) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/se6mbTZqUXGicjq4A" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第15週(12/08-12/12) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/5g1TYw8Rb6aEdiTa9" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第16週(12/15-12/19) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/QRH33phxFSF7XMub9" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第17週(12/22-12/26) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/hjZPvSELare3Fx5w6" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第18週(12/29-01/02) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/yoRZ2NnQKYuJ6tqU8" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第19週(01/05-01/09) ◆
+            </a>
+        </div>
+		
+		<div style="margin-top: 20px;">
+            <a href="https://forms.gle/ej8GXswZqX8N6eNW9" class="survey-button" target="_blank">
+                <i class="fas fa-list-alt"></i> ◆ 114-1午餐滿意度-第20週(01/12-01/16) ◆
+            </a>
+        </div>
+    </center>
+</div>
+
+    <div id="gallery" class="page-content">
+        <h2 class="page-title">活動照片</h2>
+        <div class="photo-gallery">
+            <div class="photo-item"><img src="https://images.unsplash.com/photo-1542442434-d2e53ef781a7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="午餐活動照片1"></div>
+            <div class="photo-item"><img src="https://images.unsplash.com/photo-1579621970584-c81d86b6a655?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="午餐活動照片2"></div>
+            <div class="photo-item"><img src="https://images.unsplash.com/photo-1578358897534-f2575a7c2f6d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="午餐活動照片3"></div>
+            <div class="photo-item"><img src="https://images.unsplash.com/photo-1620968940608-f1e16f3910c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="午餐活動照片4"></div>
+            <div class="photo-item"><img src="https://images.unsplash.com/photo-1512621776951-a87f6cdb1807?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" alt="午餐活動照片5"></div>
+            <div class="photo-item"><img src="https://lh3.googleusercontent.com/H_ZhWRnpX6LV1ZVjX5zlR66HLJcPSzeYguDEckZQQyVIZrJJJMgzkcS_G49SVJmTlO7b91YwP0swhiR0oJ-qsfdKQvbY-opN-vVfArDp5MJyhXkNPvlsYxBK10BJT7MXkuzI9xjaqNIAqnti-FBLPblahzVsvnW0L-pRRhQBOswlOrC6slj-=w1280" alt="午餐活動照片6"></div>
+        </div>
+    </div>
+
+    <div id="education" class="page-content">
+        <h2 class="page-title">營養教育</h2>
+        <style>
+            .video-container {
+                width: 560px;
+                height: 315px;
+                margin-bottom: 20px;
+            }
+            .upload-area {
+                width: 560px;
+                height: 180px;
+                border: 2px dashed #666;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin: 20px 0;
+                cursor: pointer;
+                transition: border-color 0.3s ease;
+                background-color: #f9f9f9;
+            }
+            .upload-area:hover {
+                border-color: #2c82c9;
+            }
+            .upload-area i {
+                font-size: 36px;
+                color: #666;
+                margin-bottom: 10px;
+            }
+            .upload-area h3 {
+                font-size: 50px;
+                color: #333;
+                margin: 0 0 8px 0;
+                text-align: center;
+                padding: 0 10px;
+            }
+            .upload-note {
+                font-size: 14px;
+                color: #888;
+                margin: 0;
+            }
+            .uploaded-file-list {
+                width: 560px;
+                margin-top: 15px;
+            }
+            .uploaded-file-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
+            .uploaded-file-item i {
+                font-size: 20px;
+                color: #2c82c9;
+                margin-right: 12px;
+            }
+            .uploaded-file-info h4 {
+                margin: 0 0 5px 0;
+                font-size: 15px;
+            }
+            .uploaded-file-path {
+                font-size: 13px;
+                color: #2c82c9;
+                text-decoration: underline;
+            }
+            .uploaded-file-path:hover {
+                color: #1a5d8c;
+            }
+            .error提示 {
+                color: #e74c3c;
+                font-size: 14px;
+                margin-top: 10px;
+            }
+        </style>
+        
+        <h3>★宣導食農教育-三章一Q標章介紹★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/n_z659seHyY?si=187DuV_b7s-lKn89" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★台南食農局-食農教育★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/YgOjNIREoUk?si=hhPzXQW0nBkvKAXf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★陽光樂豆乳最棒!!★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/gBrQTIaYPI0?si=2M_YJBUKnqz0aG6c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★沒農藥就是有機?才沒那麼簡單!!!★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/XfhXAMth-F8?si=snJgeZkvkfOO75iC" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★餐桌上的食物，你會怎麼關心呢?★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/gcB6uA7khgw?si=Qz1DIvEm5Eh1hnq8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★宜蘭-食農教育體驗自然農法插秧收成★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/19T72UeAp-4?si=5koOjbYWpfwDgqFh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★不吃麵粉身體會更好？歐美超夯的「無麩質飲食」到底是什麼？★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/roYa64Fk2pU?si=Mp4b7iEkhijNuxCs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <h3>★奶精到底是什麼？喝早餐店大冰奶會拉肚子，是奶精害的嗎？★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/FRCth5C6wvo?si=aXzVrkExEu1GiyIB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <h3>★味精曾是最潮的調味料，為何卻跌落神壇？鮮味背後的身世，可能比你想的更曲折！★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/wF7UdCb1RnA?si=qydaCns_nfHgPDdU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★魔芋爽是甚麼？成分大揭秘！★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/4dvV6f6CgzY?si=m766DFz1dmsu7p2X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        
+        <h3>★注意好XX偶爾吃不危險?!吃泡麵會怎樣★</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/mb2cW96Jae8?si=Y6pV2Wa_X22IBUSl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 雲端資料下載處
+            </a>
+        </center>
+    </div>
+
+    <div id="subsidy" class="page-content">
+        <h2 class="page-title">補助申請</h2>
+        <p>請下載申請表格，填寫完成後繳交至學務處午餐秘書。</p>
+        <div class="file-list">
+            <div class="file-item">
+                <i class="fas fa-file-word"></i>
+                <a href="https://drive.google.com/file/d/1bV9PN34vF867GJ3xKtoQgmitDvhRHGa-/view" download>113原住民補助申請表.docx</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-word"></i>
+                <a href="https://drive.google.com/file/d/1G_33mteM16ZZf9YlWw_BOKRgKmxf0t64/view" download>113暑、113-1安心餐卷申請表.docx</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-word"></i>
+                <a href="https://drive.google.com/file/d/1M9dguXQdb6P7bbAgHV6bae0R04RES-hB/view" download>113貧困午餐申請書.docx</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-word"></i>
+                <a href="https://drive.google.com/file/d/1Omh2VduikQLvoAM2dHUF6nc4_i8NblUF/view" download>午餐退費退餐申請表.docx</a>
+            </div>
+        </div>
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 雲端資料下載處
+            </a>
+        </center>
+    </div>
+
+    <div id="finance" class="page-content">
+        <h2 class="page-title">收支結算</h2>
+        <p>請點擊以下連結查看本學期午餐收支結算表。</p>
+        <div class="file-list">
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1xvcCNQbhKm5XewZ6kB0PoGz2dArLEBXO/view" download>110學年度第一學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1ns2u0mkqfMKSF9IN3V840MXt-R6bRyyZ/view" download>110學年度第二學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1OCDP2oqmRjft8fwYH_bZDWIdsA1hYjw_/view" download>111學年度第一學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1sUzq2_mGCIoBpuS8SDC5A2PcC13uuR6t/view" download>111學年度第二學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1YL6uqmnjrE96teJ-icr0EBczKU0x2wh8/view" download>112學年度第一學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1-w6FloAk54v0mMgDx1QxXmiXfVOy1xRK/view" download>112學年度第二學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/108200WPhzqVtwwv0VXpvH9OdEljdupzM/view" download>113學年度第一學期午餐收支結算表.pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-excel"></i>
+                <a href="https://drive.google.com/file/d/1XKSgySzhbtKfsMkWlFkaeYAHQC4CwKrn/view" download>113學年度第二學期午餐收支結算表.pdf</a>
+            </div>
+        </div>
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 雲端資料下載處
+            </a>
+        </center>
+    </div>
+
+    <div id="lunch-coupon" class="page-content">
+        <h2 class="page-title">安心午餐券</h2>
+        <p>請點擊以下連結下載相關文件。</p>
+        <div class="file-list">
+            <div class="file-item">
+                <i class="fas fa-file-pdf"></i>
+                <a href="https://drive.google.com/file/d/1OfuVQ79WADu9rahmVsd5FEULxE5BdRFJ/view" download>臺中市假日安心午餐券說明手冊(超商版).pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-pdf"></i>
+                <a href="https://drive.google.com/file/d/1OX2jwY-ULqLw4AAQCgIgUfRj2dYYcmTz/view" download>臺中市假日安心午餐券(說明手冊).pdf</a>
+            </div>
+            <div class="file-item">
+                <i class="fas fa-file-pdf"></i>
+                <a href="https://vimeo.com/anchorfilm2017/review/854666173/a9e3d8f4d3" download>臺中市假日安心午餐券說明手冊(影片版)</a>
+            </div>
+        </div>
+        <center>
+            <a href="https://drive.google.com/drive/folders/1p3fRv2eCKhkEVs-jCCLFEHezaZtmxMeI?usp=sharing" class="survey-button" target="_blank">
+                <i class="fas fa-pencil-alt"></i> 雲端資料下載處
+            </a>
+        </center>
+        <h3>安心午餐卷7-11機器兌換操作使用說明</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/3cbPWvArWK8?si=hucdsQNOTI5qwTPp" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <h3>安心午餐卷萊爾富機器兌換操作使用說明</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/h9FCOGAfc7Q?si=G4bI5cOAyFgKyIZY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <h3>安心午餐全家機器兌換操作使用說明</h3>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/jllksCTYGIs?si=OmRsFudZ1RJqrVuD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <h3>補充說明</h3>
+        <div class="Text content">
+            <p>一、臺中市寒暑假暨例假日安心午餐券 數位學生證 領餐流程及使用說明:</p>
+            <p>★★ 學生領餐時務必攜帶數位學生證，自114年9月1日起，為響應環保，兌餐全面實施無紙化，不再列印小白單。</p>
+            <p>★★ 學生持本市數位學生證，選好餐點後至櫃檯感應機台即可領餐，請學生配合辦理。</p>
+            <p>★★ 倘遇學生數位學生證或卡片故障、遺失或忘記攜帶等情況，請於現場填寫「臺中市安心午餐券 臨櫃兌餐表」，並依下列方式由超商店員拍照存查後，即可兌餐：</p>
+            <p>(1).數位學生證或卡片故障者：請將填妥之表單與實體卡片一併拍照存查。</p>
+            <p>(2).數位學生證或卡片遺失或忘記攜帶者：僅需拍攝填妥之表單即可。</p>
+            <p>二、請務必遵守【臺中市寒暑假暨例假日安心午餐券領餐內容及使用規範】若查有不當交易情事，將依法追究責任。</p>
+            <p>★★ 倘平日、寒暑假及例假日，因遇天災(颱風)等不可抗力因素，本市宣布停止上班上課，則當日領餐時段調整為「全天」(24小時)皆可至立約廠商門市進行兌餐。★★</p>
+            <p>★★ 寒暑假課照學生於上課日遇颱風假也可以照常至超商領餐 ★★</p>
+            <p>★★ 颱風天外出領餐請務必留意自身安全 ★★ 颱風天外出領餐請務必留意自身安全 ★★</p>
+            <p>三、</p>
+            <p>★★★★★數位學生證如遺失請立即告知午餐秘書以便後續操作</p>
+            <p>學生證如遺失請至此官網進行補辦動作: https://stcard.tc.edu.tw/</p>
+            <p>四、如領餐操作流程有問題，請撥打悠遊卡24小時客服專線:</p>
+            <p>免費客服專線  0800-028-880</p>
+            <p>付費客服電話 市話直撥 412-8880</p>
+            <p>手機及金馬地區請加 02-4128880</p>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>廠商登錄</h3>
+            <div class="login-form">
+                <div class="login-form-group">
+                    <label for="username">用戶名</label>
+                    <input type="text" id="username" placeholder="請輸入用戶名">
+                </div>
+                <div class="login-form-group">
+                    <label for="password">密碼</label>
+                    <input type="password" id="password" placeholder="請輸入密碼">
+                </div>
+                <div id="loginError"> 用戶名或密碼錯誤，請重新輸入 </div>
+                <button onclick="checkLogin()">登錄</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            // 显示选中的页面
+            document.getElementById(pageId).style.display = 'block';
+            // 如果显示的是菜单页面，更新登录状态显示
+            if (pageId === 'menu') {
+                updateLoginStatus();
+            }
+        }
+
+        // 初始显示首页
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+            initLoginState();
+            setupUploaders();
+            loadSavedData();
+        });
+
+        // 登录相关变量和函数
+        let isLoggedIn = false;
+        let currentUser = null;
+        let currentVendorId = null; // 当前登录厂商ID
+
+        // 厂商账号信息 (实际应用中应从服务器验证)
+        const vendorAccounts = [
+            { id: 1, username: 'yumei', password: 'yumei123', name: '玉美管理員' },
+            { id: 2, username: 'xianghaojia', password: 'xiang123', name: '香豪佳管理員' },
+            { id: 3, username: 'jieda', password: 'jieda123', name: '潔達管理員' },
+            { id: 0, username: 'inphoon', password: '26992028', name: '總管理員' } // 管理员可以操作所有厂商
+        ];
+
+        // 初始化登录状态
+        function initLoginState() {
+            const savedLogin = localStorage.getItem('lunchVendorLogin');
+            if (savedLogin) {
+                const loginData = JSON.parse(savedLogin);
+                isLoggedIn = true;
+                currentUser = loginData.username;
+                currentVendorId = loginData.vendorId;
+            }
+        }
+
+        // 显示登录模态框
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('visible');
+        }
+
+        // 隐藏登录模态框
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.remove('visible');
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // 检查登录
+        function checkLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const user = vendorAccounts.find(u => u.username === username && u.password === password);
+            if (user) {
+                isLoggedIn = true;
+                currentUser = user.name;
+                currentVendorId = user.id;
+                // 保存登录状态
+                localStorage.setItem('lunchVendorLogin', JSON.stringify({ username: user.name, vendorId: user.id, loginTime: new Date().toISOString() }));
+                updateLoginStatus();
+                hideLoginModal();
+                updateUploadAreaState();
+                alert(`登錄成功！歡迎，${user.name}廠商`);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // 更新登录状态显示
+        function updateLoginStatus() {
+            const loginInfo = document.getElementById('loginInfo');
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (isLoggedIn && currentUser) {
+                loginInfo.textContent = `當前登錄：${currentUser}`;
+                logoutBtn.style.display = 'inline-block';
+            } else {
+                loginInfo.textContent = '未登錄';
+                logoutBtn.style.display = 'none';
+            }
+        }
+
+        // 退出登录
+        function logout() {
+            isLoggedIn = false;
+            currentUser = null;
+            currentVendorId = null;
+            localStorage.removeItem('lunchVendorLogin');
+            updateLoginStatus();
+            updateUploadAreaState();
+            alert('已成功退出登錄');
+        }
+
+        // 更新上傳區域狀態（啟用/禁用）
+        function updateUploadAreaState() {
+            for (let i = 1; i <= 3; i++) {
+                const dropArea = document.getElementById(`drop-area-${i}`);
+                const inputField = document.getElementById(`file-input-${i}`);
+                const vendorId = i;
+
+                if (isLoggedIn && (currentVendorId === 0 || currentVendorId === vendorId)) {
+                    // 如果已登入且有權限
+                    dropArea.classList.remove('disabled');
+                    dropArea.onclick = () => handleUploadAreaClick(vendorId);
+                    inputField.disabled = false;
+                } else {
+                    // 如果未登入或無權限
+                    dropArea.classList.add('disabled');
+                    dropArea.onclick = () => handleUploadAreaClick(vendorId);
+                    inputField.disabled = true;
+                }
+            }
+        }
+
+        // 处理上传区域点击
+        function handleUploadAreaClick(vendorId) {
+            // 检查登录状态
+            if (!isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            // 检查权限 (管理员可以操作所有，厂商只能操作自己的)
+            if (currentVendorId !== 0 && currentVendorId !== vendorId) {
+                alert('您沒有權限上傳此廠商的菜單');
+                return;
+            }
+            // 触发文件选择
+            document.getElementById(`file-input-${vendorId}`).click();
+        }
+
+        // 设置上传功能
+        function setupUploaders() {
+            for (let i = 1; i <= 3; i++) {
+                setupUploader(i);
+            }
+        }
+
+        const uploaders = {};
+        function setupUploader(index) {
+            const uploader = {};
+            uploader.dropArea = document.getElementById(`drop-area-${index}`);
+            uploader.fileInput = document.getElementById(`file-input-${index}`);
+            uploader.statusMessage = document.getElementById(`status-message-${index}`);
+            uploader.tableContainer = document.getElementById(`table-container-${index}`);
+            uploader.dataTable = document.getElementById(`data-table-${index}`);
+            uploader.exportButton = document.getElementById(`export-button-${index}`);
+            uploader.currentWorkbook = null;
+
+            // 处理拖放事件
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploader.dropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            uploader.dropArea.addEventListener('drop', (e) => {
+                if (!isLoggedIn || (currentVendorId !== 0 && currentVendorId !== index)) {
+                    alert('請先登錄並確認您有權限進行此操作');
+                    return;
+                }
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0], index);
+                }
+            });
+
+            uploader.fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0], index);
+                }
+            });
+
+            uploader.exportButton.addEventListener('click', () => {
+                if (uploaders[index].currentWorkbook) {
+                    exportFile(uploaders[index].currentWorkbook, index);
+                }
+            });
+
+            uploaders[index] = uploader;
+        }
+
+        // 处理文件上传
+        function handleFile(file, index) {
+            const uploader = uploaders[index];
+            uploader.statusMessage.textContent = `正在讀取檔案: ${file.name}...`;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    uploader.currentWorkbook = workbook;
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    if (jsonData.length > 0) {
+                        uploader.statusMessage.textContent = `檔案「${file.name}」讀取成功！`;
+                        renderTable(jsonData, index);
+                        uploader.exportButton.style.display = 'inline-block';
+                        // 將資料存入 localStorage
+                        localStorage.setItem(`vendorData_${index}`, JSON.stringify(jsonData));
+                    } else {
+                        uploader.statusMessage.textContent = `檔案「${file.name}」內容為空。`;
+                        uploader.tableContainer.style.display = 'none';
+                        uploader.exportButton.style.display = 'none';
+                        localStorage.removeItem(`vendorData_${index}`);
+                    }
+                } catch (error) {
+                    console.error("處理檔案時發生錯誤:", error);
+                    uploader.statusMessage.textContent = `讀取檔案時發生錯誤。請確認您上傳的是有效的 Excel 或 CSV 檔案。`;
+                    uploader.tableContainer.style.display = 'none';
+                    uploader.exportButton.style.display = 'none';
+                    localStorage.removeItem(`vendorData_${index}`);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 渲染表格
+        function renderTable(data, index) {
+            const uploader = uploaders[index];
+            uploader.dataTable.innerHTML = '';
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            if (data[0] && data[0].length > 0) {
+                data[0].forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                uploader.dataTable.appendChild(thead);
+            }
+
+            const tbody = document.createElement('tbody');
+            for (let i = 1; i < data.length; i++) {
+                const rowData = data[i];
+                if (rowData && rowData.length > 0) {
+                    const tr = document.createElement('tr');
+                    rowData.forEach(cellData => {
+                        const td = document.createElement('td');
+                        td.textContent = cellData;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                }
+            }
+            uploader.dataTable.appendChild(tbody);
+            uploader.tableContainer.style.display = 'block';
+        }
+
+        // 导出文件
+        function exportFile(workbook, index) {
+            const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `廠商菜單_${index}.xlsx`);
+        }
+
+        // 保存文件辅助函数
+        function saveAs(obj, fileName) {
+            const a = document.createElement('a');
+            a.download = fileName;
+            a.href = URL.createObjectURL(obj);
+            a.click();
+            setTimeout(() => {
+                URL.revokeObjectURL(a.href);
+            }, 0);
+        }
+
+        // 載入已儲存資料
+        function loadSavedData() {
+            for (let i = 1; i <= 3; i++) {
+                const uploader = uploaders[i];
+                const savedData = localStorage.getItem(`vendorData_${i}`);
+                if (savedData) {
+                    const jsonData = JSON.parse(savedData);
+                    if (jsonData && jsonData.length > 0) {
+                        renderTable(jsonData, i);
+                        uploader.tableContainer.style.display = 'block';
+                        uploader.exportButton.style.display = 'inline-block';
+                        uploader.statusMessage.textContent = `已載入上次儲存的菜單。`;
+                        
+                        const ws = XLSX.utils.aoa_to_sheet(jsonData);
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+                        uploader.currentWorkbook = wb;
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 頁尾 -->
+    <footer style="text-align: center; padding: 20px; margin-top: 30px; border-top: 1px solid #eee;">
+        © 2025 大道國中 午餐資訊系統 | 電話: (04) 2699-2028 | 地址: 臺中市大肚區大東里仁德路60號 | 傳真：04-26980970
+    </footer>
+</body>
+</html>
